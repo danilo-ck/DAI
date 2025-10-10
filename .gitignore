@@ -1,0 +1,71 @@
+# ==========================
+# 📦 Node.js / npm
+# ==========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+.pnpm-debug.log
+
+# ==========================
+# 🧰 Entornos / configuración local
+# ==========================
+.env
+.env.local
+.env.*.local
+
+# ==========================
+# 💾 Datos temporales o de salida
+# ==========================
+data/
+*.json
+!package.json        # pero sí sube package.json
+!package-lock.json   # opcional, quita el "!" si prefieres excluirlo
+
+# ==========================
+# 🐳 Docker
+# ==========================
+docker-compose.override.yml
+docker-data/
+*.pid
+
+# ==========================
+# ⚙️ IDE / Sistema
+# ==========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==========================
+# 🔍 Logs y cachés
+# ==========================
+logs/
+*.log
+*.tmp
+*.bak
+.cache/
+coverage/
+dist/
+build/
+out/
+
+# ==========================
+# 🧪 Tests (si los añades)
+# ==========================
+/test-results/
+/coverage/
+
+# ==========================
+# 🧮 Archivos temporales varios
+# ==========================
+*.lock
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
