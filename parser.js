@@ -9,8 +9,8 @@ import { parse } from 'node-html-parser';
 // Para acumular la informÃ¡cion de los productos
 const Info = []
 
-// Extraer automáticamente los archivos HTML de la carpeta 'productos'
-const path_productos = './productos'
+// Extraer automáticamente los archivos HTML de la carpeta 'html'
+const path_productos = './html'
 const archivos_html = fs.readdirSync(path_productos).filter(f => f.endsWith('.html')).map(f => `${path_productos}/${f}`)
 
 for (const archivo of archivos_html) {
