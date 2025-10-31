@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1 class="mb-3">Tu carrito</h1>
+
+  {% if productos and productos.length %}
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th class="text-center">Cantidad</th>
+            <th class="text-end">Precio</th>
+            <th class="text-end">Subtotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for it in productos %}
+          <tr>
+            <td class="d-flex align-items-center gap-3">
+              {% if it.image %}
+                <img src="{{ it.image }}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:.5rem;">
+              {% endif %}
+              <div>{{ it.title }}</div>
+            </td>
+            <td class="text-center">
+              <div class="btn-group btn-group-sm" role="group">
+                <a class="btn btn-outline-secondary" href="/carrito/cambiar/{{ it.id }}?op=dec">-</a>
+                <span class="btn btn-light disabled">{{ it.qty }}</span>
+                <a class="btn btn-outline-secondary" href="/carrito/cambiar/{{ it.id }}?op=inc">+</a>
+              </div>
+            </td>
+            <td class="text-end">{{ it.price | round(2) }} €</td>
+            <td class="text-end">{{ (it.price * it.qty) | round(2) }} €</td>
+            <td class="text-end">
+              <a class="btn btn-outline-danger btn-sm" href="/carrito/eliminar/{{ it.id }}">Eliminar</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="3" class="text-end">Total unidades:</th>
+            <th class="text-end">{{ totalQty }}</th>
+            <th></th>
+          </tr>
+          <tr>
+            <th colspan="3" class="text-end">Total a pagar:</th>
+            <th class="text-end h5">{{ totalAmount | round(2) }} €</th>
+            <th></th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end">
+      <a class="btn btn-outline-secondary" href="/carrito/vaciar">Vaciar carrito</a>
+      <a class="btn btn-success disabled" href="#">Tramitar pedido (demo)</a>
+    </div>
+  {% else %}
+    <div class="alert alert-info">Tu carrito está vacío.</div>
+    <a class="btn btn-primary" href="/">Seguir comprando</a>
+  {% endif %}
+{% endblock %}

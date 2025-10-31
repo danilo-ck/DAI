@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1 class="mb-3">Resultados</h1>
+  {% if q %}<p class="text-muted">Buscaste: <strong>{{ q }}</strong> — {{ total }} resultado(s)</p>{% endif %}
+
+  {% if productos and productos.length %}
+    <div class="row g-4">
+      {% for p in productos %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        {% set cardClass = "card product-card h-100 shadow-sm" %}
+        {% if p.is_discounted and p.discounted_price > 0 %}
+          {% set cardClass = cardClass + " on-sale" %}
+        {% endif %}
+        <div class="{{ cardClass }}">
+          {% if p.image %}
+            <div class="ratio ratio-4x3">
+              <img src="{{ p.image }}" class="card-img-top" alt="{{ p.title }}">
+            </div>
+          {% endif %}
+
+          <div class="card-body">
+            <h6 class="card-title text-truncate-2">{{ p.title }}</h6>
+
+            {% if p.is_discounted and p.discounted_price > 0 %}
+              <div class="mb-1">
+                <span class="badge bg-danger me-2">Rebajado</span>
+                <span class="price-new">{{ p.discounted_price | round(2) }} €</span>
+                {% if p.price is number %}
+                  <span class="price-old">{{ p.price | round(2) }} €</span>
+                {% endif %}
+              </div>
+            {% else %}
+              <div class="mb-1">
+                {% if p.price is number %}
+                  <span class="price">{{ p.price | round(2) }} €</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ p.price_text or "Precio s/d" }}</span>
+                {% endif %}
+              </div>
+            {% endif %}
+
+            {% if p.unit_price_text %}
+              <div class="small text-muted">{{ p.unit_price_text }}</div>
+            {% endif %}
+            <a class="btn btn-success btn-sm mt-2" href="/al_carrito/{{ p._id }}">Añadir al carro</a>
+          </div>
+
+          <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center">
+            <small class="text-muted">{{ p.category }}{% if p.subcategory %} / {{ p.subcategory }}{% endif %}</small>
+            {% if p.link %}
+              <a class="btn btn-outline-primary btn-sm" href="{{ p.link }}" target="_blank">Ver</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if pages > 1 %}
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          {% for i in range(1, pages + 1) %}
+            {% set pageClass = "page-item" %}
+            {% if i == page %}
+              {% set pageClass = pageClass + " active" %}
+            {% endif %}
+            <li class="{{ pageClass }}">
+              <a class="page-link" href="/buscar?q={{ q | urlencode }}&page={{ i }}">{{ i }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="alert alert-warning">No hay resultados.</div>
+  {% endif %}
+{% endblock %}

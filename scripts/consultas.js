@@ -1,7 +1,7 @@
 // consultas.js
 import mongoose from "mongoose";
-import connectDB from "./model/db.js";
-import Producto from "./model/Producto.js";
+import connectDB from "../model/db.js";
+import Producto from "../model/Producto.js";
 
 const acciones = {
   async baratos() {
