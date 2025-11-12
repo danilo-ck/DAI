@@ -22,6 +22,11 @@ const usuarioSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6
+  },
+  admin: { 
+    type: Boolean, 
+    default: false, 
+    required: false 
   }
 }, { timestamps: true });
 

@@ -53,7 +53,7 @@ router.post("/registro", express.urlencoded({ extended: false }), async (req, re
       email: email?.trim().toLowerCase() || undefined,
       password
     });
-    signAndSetCookie(res, { usuario: user.username, uid: String(user._id) });
+    signAndSetCookie(res, { usuario: user.username, uid: String(user._id), admin: !!user.admin });
     return res.redirect("/");
   } catch (e) {
     console.error(e);
@@ -87,7 +87,15 @@ router.post("/login", express.urlencoded({ extended: false }), async (req, res) 
       return res.status(401).render("login.html", { titulo: "Identificarse", errors, values: { username } });
     }
 
-    signAndSetCookie(res, { usuario: user.username, uid: String(user._id) });
+    // Incluir admin en el JWT
+    const payload = { usuario: user.username, uid: String(user._id), admin: !!user.admin };
+    const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "7d" });
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.IN === "production",
+      maxAge: 1000 * 60 * 60 * 24 * 7
+    });
     return res.redirect("/");
   } catch (e) {
     console.error(e);

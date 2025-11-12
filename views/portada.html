@@ -28,6 +28,9 @@
               <a href="{{ p.link }}" target="_blank" class="btn btn-primary btn-sm">Ver producto</a>
             {% endif %}
             <a class="btn btn-success btn-sm mt-2" href="/al_carrito/{{ p._id }}">Añadir al carro</a>
+            {% if esAdmin %}
+              <a class="btn btn-outline-warning btn-sm" href="/admin/precio/{{ p._id }}">Cambiar precio</a>
+            {% endif %}
           </div>
         </div>
       </div>

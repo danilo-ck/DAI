@@ -58,19 +58,20 @@ app.use(cookieParser());
 // JWT -> req.user y {{ usuario }} en plantillas
 const autenticacion = (req, res, next) => {
   const token = req.cookies?.access_token;
+  let usuario, esAdmin = false;
   if (token) {
     try {
       const data = jwt.verify(token, process.env.SECRET_KEY);
-      req.user = { username: data.usuario, uid: data.uid };
-      app.locals.usuario = data.usuario;   // usable en navbar: {{ usuario }}
+      req.user = { username: data.usuario, uid: data.uid, admin: !!data.admin };
+      usuario = data.usuario;
+      esAdmin = !!data.admin;
     } catch {
       req.user = undefined;
-      app.locals.usuario = undefined;
     }
-  } else {
-    req.user = undefined;
-    app.locals.usuario = undefined;
   }
+  // disponibles en Nunjucks
+  app.locals.usuario = usuario;
+  app.locals.esAdmin = esAdmin;
   next();
 };
 app.use(autenticacion);
@@ -78,6 +79,10 @@ app.use(autenticacion);
 // Monta el router de usuarios
 import UsuariosRouter from "./routes/router_usuarios.js";
 app.use("/usuarios", UsuariosRouter);
+
+// Monta el router de administración
+import AdminRouter from "./routes/router_admin.js";
+app.use("/admin", AdminRouter);
 
 // Tests
 app.get("/hola", (req, res) => res.send("Hola desde el servidor"));

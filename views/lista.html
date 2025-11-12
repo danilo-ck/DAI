@@ -43,6 +43,9 @@
               <div class="small text-muted">{{ p.unit_price_text }}</div>
             {% endif %}
             <a class="btn btn-success btn-sm mt-2" href="/al_carrito/{{ p._id }}">Añadir al carro</a>
+            {% if esAdmin %}
+              <a class="btn btn-outline-warning btn-sm" href="/admin/precio/{{ p._id }}">Cambiar precio</a>
+            {% endif %}
           </div>
 
           <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center">
