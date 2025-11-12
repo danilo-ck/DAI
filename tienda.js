@@ -4,6 +4,8 @@ import nunjucks from "nunjucks";
 import connectDB from "./model/db.js";
 import TiendaRouter from "./routes/router_tienda.js";
 import session from "express-session";
+import cookieParser from "cookie-parser";
+import jwt from "jsonwebtoken";
 
 await connectDB();
 
@@ -50,11 +52,38 @@ app.use((req, res, next) => {
   next();
 });
 
+// Cookie parser (debe ir ANTES de los routers)
+app.use(cookieParser());
+
+// JWT -> req.user y {{ usuario }} en plantillas
+const autenticacion = (req, res, next) => {
+  const token = req.cookies?.access_token;
+  if (token) {
+    try {
+      const data = jwt.verify(token, process.env.SECRET_KEY);
+      req.user = { username: data.usuario, uid: data.uid };
+      app.locals.usuario = data.usuario;   // usable en navbar: {{ usuario }}
+    } catch {
+      req.user = undefined;
+      app.locals.usuario = undefined;
+    }
+  } else {
+    req.user = undefined;
+    app.locals.usuario = undefined;
+  }
+  next();
+};
+app.use(autenticacion);
+
+// Monta el router de usuarios
+import UsuariosRouter from "./routes/router_usuarios.js";
+app.use("/usuarios", UsuariosRouter);
+
 // Tests
 app.get("/hola", (req, res) => res.send("Hola desde el servidor"));
 app.get("/test", (req, res) => res.render("test.html"));
 
-// Router de la tienda
+// Router de la tienda (debe ir DESPUÉS de autenticación)
 app.use("/", TiendaRouter);
 
 app.listen(PORT, () => {

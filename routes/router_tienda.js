@@ -108,13 +108,8 @@ router.get("/buscar", async (req, res) => {
   const skip = (page - 1) * limit;
 
   if (!q) {
-    return res.render("lista.html", {
-      productos: [],
-      q,
-      titulo: "Buscar",
-      page,
-      total: 0,
-      pages: 0
+    return res.render("buscar.html", {
+      titulo: "Buscar productos"
     });
   }
 

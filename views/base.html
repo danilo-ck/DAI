@@ -19,20 +19,30 @@
         <div class="collapse navbar-collapse" id="navbarContent">
           <div class="navbar-nav me-auto">
             <a class="nav-link" href="/">Inicio</a>
+          </div>
+          <div class="navbar-nav ms-auto align-items-center">
+            <form class="d-flex me-3" action="/buscar" method="get" role="search">
+              <input class="form-control form-control-sm me-2" type="search" name="q" placeholder="Buscar productos..." value="{{ q or '' }}" aria-label="Buscar" style="min-width: 200px;">
+              <button class="btn btn-sm btn-outline-light" type="submit">🔍</button>
+            </form>
+
+            {% if usuario %}
+              <span class="navbar-text me-2">Hola, <strong>{{ usuario }}</strong></span>
+              <a class="nav-link" href="/usuarios/logout">Salir</a>
+            {% else %}
+              <a class="nav-link" href="/usuarios/login">Identificarse</a>
+            {% endif %}
+
             <a class="nav-link position-relative" href="/carrito">
-              🛒 Carrito
+              Carrito
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {{ cart.totalQty or 0 }}
               </span>
             </a>
             <span class="navbar-text ms-3">
-              💰 <strong>{{ (cart.totalAmount or 0) | round(2) }} €</strong>
+              Total: <strong>{{ (cart.totalAmount or 0) | round(2) }} €</strong>
             </span>
           </div>
-          <form class="d-flex my-2 my-lg-0" action="/buscar" method="get" role="search">
-            <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..." value="{{ q or '' }}" aria-label="Buscar" style="min-width: 250px;">
-            <button class="btn btn-outline-light" type="submit">🔍</button>
-          </form>
         </div>
     </div>
     </nav>
