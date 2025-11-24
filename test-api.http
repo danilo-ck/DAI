@@ -1,0 +1,48 @@
+@host = http://localhost:8000
+
+### Lista (con búsqueda opcional ?q=aceite)
+GET {{host}}/api/productos
+
+### Get por id
+GET {{host}}/api/productos/69039bc629e46873e658e9be
+
+### (alias singular)
+GET {{host}}/api/producto/69039bc629e46873e658e9be
+
+### Crear producto
+POST {{host}}/api/productos
+Content-Type: application/json
+
+{
+  "title": "Aceite de prueba 1L",
+  "price": 4.99,
+  "unit_price_text": "4,99 €/L",
+  "category": "aceites",
+  "subcategory": "aceite-de-oliva",
+  "image": "https://example.com/aceite.jpg",
+  "link": "https://example.com"
+}
+
+### Actualizar precio (PUT)
+PUT {{host}}/api/productos/69039bc629e46873e658e9be
+Content-Type: application/json
+
+{
+  "price": 3.49,
+  "is_discounted": true,
+  "discounted_price": 2.99
+}
+
+### (alias singular)
+PUT {{host}}/api/producto/69039bc629e46873e658e9be
+Content-Type: application/json
+
+{
+  "price": 5.10
+}
+
+### Eliminar
+DELETE {{host}}/api/productos/69039bc629e46873e658e9be
+
+### (alias singular)
+DELETE {{host}}/api/producto/69039bc629e46873e658e9be

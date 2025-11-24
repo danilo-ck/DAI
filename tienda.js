@@ -6,12 +6,34 @@ import TiendaRouter from "./routes/router_tienda.js";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
+import morgan from "morgan";
+import logger from "./utils/logger.js";
+import ApiRouter from "./routes/router_api.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
 
 await connectDB();
 
 const app = express();
 const IN = process.env.IN || "development";
 const PORT = process.env.PORT_APP || 8000;
+
+// Configuración Swagger/OpenAPI
+const swaggerSpec = swaggerJSDoc({
+  definition: {
+    openapi: "3.0.3",
+    info: { title: "Tienda API", version: "1.0.0" }
+  },
+  apis: ["./routes/router_api.js"]  // leerá los JSDoc de ese archivo
+});
+
+// 1) Body parser para JSON
+app.use(express.json());
+
+// 2) Logger HTTP con morgan -> winston
+app.use(morgan("dev", {
+  stream: { write: msg => logger.http(msg.trim()) }
+}));
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'my-secret',
@@ -90,6 +112,24 @@ app.get("/test", (req, res) => res.render("test.html"));
 
 // Router de la tienda (debe ir DESPUÉS de autenticación)
 app.use("/", TiendaRouter);
+
+// 3) Documentación API con Swagger
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// 4) API REST
+app.use("/api", ApiRouter);
+
+// 5) 404 para API (solo cuando empieza por /api)
+app.use("/api", (req, res) => {
+  res.status(404).json({ error: "Recurso no encontrado" });
+});
+
+// 6) Middleware de errores (último)
+app.use((err, req, res, next) => {
+  logger.error(err.stack || err.message || String(err));
+  const status = err.status || 500;
+  res.status(status).json({ error: err.message || "Error interno" });
+});
 
 app.listen(PORT, () => {
   console.log(`Servidor en http://localhost:${PORT}`);
