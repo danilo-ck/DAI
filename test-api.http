@@ -1,5 +1,8 @@
 @host = http://localhost:8000
 
+###
+GET {{host}}/api/busqueda-anticipada/ace
+
 ### Lista (con búsqueda opcional ?q=aceite)
 GET {{host}}/api/productos
 

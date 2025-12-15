@@ -151,4 +151,9 @@ router.get("/buscar", async (req, res) => {
   });
 });
 
+// GET /anticipada - Búsqueda anticipada con Tailwind
+router.get("/anticipada", (req, res) => {
+  res.render("anticipada.html", { titulo: "Búsqueda anticipada" });
+});
+
 export default router;

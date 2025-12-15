@@ -24,7 +24,7 @@
             {% if p.is_discounted and p.discounted_price > 0 %}
               <div class="mb-1">
                 <span class="badge bg-danger me-2">Rebajado</span>
-                <span class="price-new">{{ p.discounted_price | round(2) }} €</span>
+                <span class="price-new" data-price-current="{{ p.discounted_price }}">{{ p.discounted_price | round(2) }} €</span>
                 {% if p.price is number %}
                   <span class="price-old">{{ p.price | round(2) }} €</span>
                 {% endif %}
@@ -32,7 +32,7 @@
             {% else %}
               <div class="mb-1">
                 {% if p.price is number %}
-                  <span class="price">{{ p.price | round(2) }} €</span>
+                  <span class="price" data-price-current="{{ p.price }}">{{ p.price | round(2) }} €</span>
                 {% else %}
                   <span class="badge bg-secondary">{{ p.price_text or "Precio s/d" }}</span>
                 {% endif %}
@@ -43,8 +43,28 @@
               <div class="small text-muted">{{ p.unit_price_text }}</div>
             {% endif %}
             <a class="btn btn-success btn-sm mt-2" href="/al_carrito/{{ p._id }}">Añadir al carro</a>
+            
             {% if esAdmin %}
-              <a class="btn btn-outline-warning btn-sm" href="/admin/precio/{{ p._id }}">Cambiar precio</a>
+              <div class="mt-2 edit-price" 
+                   data-product-id="{{ p._id }}" 
+                   data-current-price="{% if p.is_discounted and p.discounted_price > 0 %}{{ p.discounted_price }}{% elif p.price is number %}{{ p.price }}{% else %}0{% endif %}">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">€</span>
+                  <input type="number" step="0.01" min="0" 
+                         class="form-control precio-input" 
+                         value="{% if p.is_discounted and p.discounted_price > 0 %}{{ p.discounted_price }}{% elif p.price is number %}{{ p.price }}{% endif %}" 
+                         placeholder="Nuevo precio">
+                  <button class="btn btn-outline-warning cambiar-precio-btn">Cambiar precio</button>
+                </div>
+                <div class="small mt-1">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input es-rebaja" type="checkbox" id="rebaja_{{ p._id }}" 
+                           {% if p.is_discounted and p.discounted_price > 0 %}checked{% endif %}>
+                    <label class="form-check-label" for="rebaja_{{ p._id }}">Rebajado</label>
+                  </div>
+                  <span class="estado-accion text-muted"></span>
+                </div>
+              </div>
             {% endif %}
           </div>
 

@@ -829,3 +829,22 @@ main.container {
 .btn-group-sm .btn {
   font-size: 0.875rem;
 }
+
+/* ========== EDICIÓN DE PRECIOS (ADMIN) ========== */
+.edit-price .estado-accion {
+  min-height: 1.25rem;
+}
+
+.price {
+  font-weight: 700;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: #888;
+  margin-left: .5rem;
+}
+
+.price-new {
+  font-weight: 800;
+}

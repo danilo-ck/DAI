@@ -9,6 +9,36 @@ const router = express.Router();
 // Utils
 const isValidObjectId = id => mongoose.Types.ObjectId.isValid(id);
 
+// --- GET /api/busqueda-anticipada/:q (búsqueda en tiempo real) ---
+router.get("/busqueda-anticipada/:q", async (req, res, next) => {
+  try {
+    const q = (req.params.q || "").trim();
+
+    if (q.length < 3) {
+      return res.json({ q, count: 0, items: [] });
+    }
+
+    // Búsqueda tipo LIKE con regex (insensible a mayúsculas)
+    const safe = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // escapa regex
+    const re = new RegExp(safe, "i");
+
+    const filter = {
+      $or: [
+        { title: re },
+        { category: re },
+        { subcategory: re }
+      ]
+    };
+
+    // De momento devolvemos algunos campos y limitamos resultados
+    const items = await Producto.find(filter)
+      .select("title price discounted_price is_discounted category subcategory image link")
+      .limit(20);
+
+    res.json({ q, count: items.length, items });
+  } catch (e) { next(e); }
+});
+
 /**
  * @openapi
  * /api/productos:
