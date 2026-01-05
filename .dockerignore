@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+.DS_Store
+
+data
+dump
+*.zip
+
+.git
+.gitignore
+
+frontend/node_modules
+frontend/dist

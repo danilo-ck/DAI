@@ -1,0 +1,49 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo-dai
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${USER_DB}
+      MONGO_INITDB_ROOT_PASSWORD: ${PASS}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - dai_net
+
+  tienda:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tienda-dai
+    restart: unless-stopped
+    env_file:
+      - .env.prod
+    depends_on:
+      - mongo
+    networks:
+      - dai_net
+    expose:
+      - "8000"
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy-dai
+    restart: unless-stopped
+    depends_on:
+      - tienda
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./public:/usr/share/caddy/public:ro
+      - ./frontend/dist:/usr/share/caddy/react:ro
+    networks:
+      - dai_net
+
+volumes:
+  mongo_data:
+
+networks:
+  dai_net:
+    driver: bridge

@@ -1,12 +1,14 @@
 // model/db.js
 import mongoose from "mongoose";
 
-const { USER_DB, PASS, HOST, DB_NAME } = process.env;
+const USER_DB = process.env.USER_DB;
+const PASS = process.env.PASS;
 
-// Si están todas las variables de entorno, úsalas; sino, usa valores por defecto
-const url = (USER_DB && PASS && HOST && DB_NAME) 
-  ? `mongodb://${USER_DB}:${PASS}@${HOST}:27017/${DB_NAME}?authSource=admin`
-  : process.env.MONGO_URL || "mongodb://root:example@localhost:27017/DAI?authSource=admin";
+const MONGO_HOST = process.env.MONGO_HOST || "localhost";
+const MONGO_PORT = process.env.MONGO_PORT || "27017";
+const MONGO_DB = process.env.MONGO_DB || "DAI";
+
+const url = `mongodb://${USER_DB}:${PASS}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
 
 export default async function connectDB() {
   try {

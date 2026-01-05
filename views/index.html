@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-5">
+  <div class="col-md-8 mx-auto">
+    <div class="jumbotron bg-white p-5 rounded-lg shadow-sm">
+      <h1 class="display-4 mb-4">Bienvenido a nuestra Tienda</h1>
+      <p class="lead mb-4">Descubre nuestros productos de calidad</p>
+      
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+              <h5 class="card-title">📦 Ver Tienda</h5>
+              <p class="card-text">Accede a nuestro catálogo de productos</p>
+              <a href="/tienda" class="btn btn-primary">Ir a la Tienda</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+              <h5 class="card-title">🔍 Buscar Productos</h5>
+              <p class="card-text">Encuentra lo que necesitas rápidamente</p>
+              <a href="/anticipada" class="btn btn-info">Búsqueda Anticipada</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+:80 {
+
+# Manejo de errores personalizados
+handle_errors {
+@404 expression `{err.status_code} == 404`
+handle @404 {
+rewrite * /404.html
+root * /usr/share/caddy/public
+file_server
+}
+respond "{err.status_code} {err.status_text}"
+}
+
+# Para React SPA: redirige /react a /react/
+redir /react /react/
+
+# Sirve React en /react/
+handle /react/* {
+root * /usr/share/caddy
+# Reescribe rutas sin extensión a /react/index.html (para SPA)
+@notfile {
+not file
+}
+rewrite @notfile /react/index.html
+file_server
+}
+
+handle /public/* {
+root * /usr/share/caddy
+file_server
+}
+
+# Todas las rutas van a Express (/, /tienda, /buscar, /api, /carrito, etc.)
+handle {
+reverse_proxy tienda-dai:8000
+}
+
+log {
+output stdout
+}
+}

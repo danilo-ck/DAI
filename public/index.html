@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda DAI - Inicio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .link-card {
+            display: block;
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .link-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        
+        .link-card p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .link-card.tienda {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
+        
+        .link-card.tienda:hover {
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6);
+        }
+        
+        .link-card.busqueda {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        .link-card.busqueda:hover {
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.6);
+        }
+        
+        .link-card.react {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            box-shadow: 0 4px 15px rgba(67, 233, 123, 0.4);
+        }
+        
+        .link-card.react:hover {
+            box-shadow: 0 8px 25px rgba(67, 233, 123, 0.6);
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .link-card h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Navegación DAI</h1>
+        <p class="subtitle">Selecciona la versión de la aplicación</p>
+        
+        <div class="links">
+            <a href="/tienda" class="link-card tienda">
+                <h2>🏪 Aplicación de Tienda</h2>
+                <p>Versión clásica con renderizado del servidor (MPA)</p>
+            </a>
+            
+            <a href="/buscar" class="link-card busqueda">
+                <h2>🔍 Búsqueda Anticipada</h2>
+                <p>Búsqueda de productos con autocompletado</p>
+            </a>
+            
+            <a href="/react/" class="link-card react">
+                <h2>⚛️ Aplicación React</h2>
+                <p>Versión moderna con React (SPA)</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

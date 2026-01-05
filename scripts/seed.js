@@ -1,6 +1,11 @@
 // seed.js
 import fs from "fs/promises";
 import mongoose from "mongoose";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import connectDB from "../model/db.js";
 import Producto from "../model/Producto.js";
@@ -9,7 +14,8 @@ async function main() {
   await connectDB();
 
   // Lee el JSON con los productos parseados en la práctica 1.1
-  const raw = await fs.readFile("../datos_mercadona.json", "utf8");
+  const dataPath = path.join(__dirname, "../datos_mercadona.json");
+  const raw = await fs.readFile(dataPath, "utf8");
   const lista = JSON.parse(raw);
 
   // (Opcional) Mapeo/normalización por seguridad

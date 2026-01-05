@@ -16,8 +16,8 @@ import cors from "cors";
 await connectDB();
 
 const app = express();
-const IN = process.env.IN || "development";
-const PORT = process.env.PORT_APP || 8000;
+const IN = process.env.NODE_ENV || "development";
+const PORT = process.env.PORT || 8000;
 
 // Configuración Swagger/OpenAPI
 const swaggerSpec = swaggerJSDoc({
@@ -119,8 +119,17 @@ app.use("/admin", AdminRouter);
 app.get("/hola", (req, res) => res.send("Hola desde el servidor"));
 app.get("/test", (req, res) => res.render("test.html"));
 
+
 // Router de la tienda (debe ir DESPUÉS de autenticación)
 app.use("/", TiendaRouter);
+
+// Middleware 404 para páginas web (antes de API)
+app.use((req, res, next) => {
+  res.status(404).render("404.html", { 
+    titulo: "404 - Página no encontrada",
+    mensaje: `No encontramos la página: ${req.url}`
+  });
+});
 
 // 3) Documentación API con Swagger
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

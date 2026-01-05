@@ -94,8 +94,13 @@ router.get("/carrito/vaciar", (req, res) => {
   res.redirect("/carrito");
 });
 
+// Índice de contenidos (raíz)
+router.get("/", (req, res) => {
+  res.render("index.html", { titulo: "Tienda | Índice" });
+});
+
 // Portada 
-router.get("/", async (req, res) => {
+router.get("/tienda", async (req, res) => {
   const productos = await Producto.aggregate([{ $sample: { size: 3 } }]);
   res.render("portada.html", { productos, titulo: "Tienda | Portada" });
 });

@@ -88,7 +88,7 @@ export default function Resultados({ de }) {
     return null;
   }
 
-  const url = `http://localhost:8000/api/busqueda-anticipada/${encodeURIComponent(q)}`;
+  const url = `/api/busqueda-anticipada/${encodeURIComponent(q)}`;
   const { data, error, isLoading } = useSWR(url, fetcher);
 
   if (isLoading) {
