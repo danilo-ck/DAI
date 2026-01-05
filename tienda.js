@@ -11,6 +11,7 @@ import logger from "./utils/logger.js";
 import ApiRouter from "./routes/router_api.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
+import cors from "cors";
 
 await connectDB();
 
@@ -26,6 +27,14 @@ const swaggerSpec = swaggerJSDoc({
   },
   apis: ["./routes/router_api.js"]  // leerá los JSDoc de ese archivo
 });
+
+// CORS para desarrollo con React
+if (IN === "development") {
+  app.use(cors({
+    origin: ["http://localhost:5173", "http://localhost:5174"],
+    credentials: true
+  }));
+}
 
 // 1) Body parser para JSON
 app.use(express.json());
