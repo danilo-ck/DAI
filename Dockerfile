@@ -9,7 +9,7 @@ RUN npm install --omit=dev
 # Copiar el resto
 COPY . .
 
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 EXPOSE 8000
 
 CMD ["node", "tienda.js"]

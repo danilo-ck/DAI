@@ -119,11 +119,16 @@ app.use("/admin", AdminRouter);
 app.get("/hola", (req, res) => res.send("Hola desde el servidor"));
 app.get("/test", (req, res) => res.render("test.html"));
 
+// 3) Documentación API con Swagger
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// 4) API REST (ANTES del middleware 404)
+app.use("/api", ApiRouter);
 
 // Router de la tienda (debe ir DESPUÉS de autenticación)
 app.use("/", TiendaRouter);
 
-// Middleware 404 para páginas web (antes de API)
+// Middleware 404 para páginas web (al final, antes de errores)
 app.use((req, res, next) => {
   res.status(404).render("404.html", { 
     titulo: "404 - Página no encontrada",
@@ -131,18 +136,7 @@ app.use((req, res, next) => {
   });
 });
 
-// 3) Documentación API con Swagger
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// 4) API REST
-app.use("/api", ApiRouter);
-
-// 5) 404 para API (solo cuando empieza por /api)
-app.use("/api", (req, res) => {
-  res.status(404).json({ error: "Recurso no encontrado" });
-});
-
-// 6) Middleware de errores (último)
+// 5) Middleware de errores (último)
 app.use((err, req, res, next) => {
   logger.error(err.stack || err.message || String(err));
   const status = err.status || 500;

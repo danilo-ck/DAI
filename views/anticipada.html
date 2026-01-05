@@ -1,247 +1,239 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Búsqueda anticipada</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/tailwind.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
-  </head>
+{% block content %}
+<div class="container-fluid py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+  <div class="container">
+    <h1 class="display-4 mb-3">🔍 Búsqueda Anticipada</h1>
+    <p class="lead mb-0">Encuentra productos escribiendo solo 3 caracteres</p>
+  </div>
+</div>
 
-  <body class="min-h-screen bg-gray-50">
-    <div class="max-w-6xl mx-auto px-4 py-10">
-      <h1 class="text-2xl font-semibold text-gray-900 mb-6">Búsqueda anticipada</h1>
+<div class="container py-5">
+  <!-- Barra búsqueda -->
+  <div class="card shadow-sm border-0 mb-4" style="border-radius: 15px;">
+    <div class="card-body p-4">
+      <label class="form-label fw-500 mb-3">Buscar productos</label>
 
-      <!-- Barra búsqueda -->
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Buscar productos</label>
-
-        <div class="relative">
-          <input id="q"
-                 type="search"
-                 placeholder="Escribe al menos 3 caracteres…"
-                 class="w-full rounded-xl border border-gray-300 px-4 py-3 pr-28
-                        focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500" />
-          <div class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-            <span id="spinner" class="hidden">Buscando…</span>
-          </div>
-        </div>
-
-        <p id="hint" class="text-sm text-gray-500 mt-3">
-          Escribe 3 o más caracteres para ver coincidencias.
-        </p>
-
-        <p id="error" class="text-sm mt-2 text-red-600 hidden"></p>
+      <div class="input-group input-group-lg">
+        <input id="q"
+               type="search"
+               class="form-control"
+               placeholder="Escribe al menos 3 caracteres…"
+               style="border-radius: 10px 0 0 10px;"
+               aria-label="Buscar productos">
+        <span class="input-group-text" id="spinner" style="border-radius: 0 10px 10px 0; display: none;">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <small class="ms-2">Buscando…</small>
+        </span>
       </div>
 
-      <!-- Resultado resumen -->
-      <div class="mt-6">
-        <p id="result" class="text-sm hidden">
-          Resultados para "<span id="qEcho" class="font-semibold"></span>":
-          <span id="count" class="font-semibold text-gray-900">0</span>
-        </p>
-        <p id="empty" class="text-sm text-gray-500 hidden">No hay resultados.</p>
-      </div>
+      <p id="hint" class="text-muted small mt-3 mb-0">
+        Escribe 3 o más caracteres para ver coincidencias.
+      </p>
 
-      <!-- CONTENEDOR TARJETAS -->
-      <div id="tarjetas" class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"></div>
-
-      <!-- TEMPLATE TARJETA -->
-      <template id="plantilla">
-        <div class="bg-white rounded-xl border border-gray-200 hover:shadow-md transition overflow-hidden">
-          <a class="prod-link block" href="#" target="_blank" rel="noreferrer">
-            <div class="h-32 flex items-center justify-center bg-gray-50">
-              <img class="prod-img w-28 h-28 object-contain" src="" alt="">
-            </div>
-          </a>
-
-          <div class="p-3">
-            <div class="prod-title text-sm text-gray-900 leading-snug line-clamp-3 min-h-[3.5rem]"></div>
-
-            <div class="mt-2">
-              <div class="flex items-baseline gap-2">
-                <span class="prod-price text-base font-bold text-gray-900"></span>
-                <span class="prod-price-old text-xs text-gray-400 line-through hidden"></span>
-              </div>
-              <div class="prod-unit text-xs text-gray-500 mt-1"></div>
-              <div class="prod-badge mt-2 hidden">
-                <span class="inline-block text-xs font-semibold text-red-700 bg-red-100 px-2 py-1 rounded-full">
-                  Rebajado
-                </span>
-              </div>
-            </div>
-
-            <div class="mt-3">
-              <a class="btn-add block text-center text-sm rounded-xl px-3 py-2 border border-yellow-600 text-yellow-800 hover:bg-yellow-100"
-                 href="#">
-                Añadir al carro
-              </a>
-            </div>
-          </div>
-        </div>
-      </template>
+      <p id="error" class="alert alert-danger small mt-3 mb-0 hidden" style="display: none;"></p>
     </div>
+  </div>
 
-    <script>
-      const input = document.getElementById("q");
-      const spinner = document.getElementById("spinner");
-      const hint = document.getElementById("hint");
-      const errorEl = document.getElementById("error");
+  <!-- Resultado resumen -->
+  <div class="mb-4">
+    <p id="result" class="h5 mb-3" style="display: none;">
+      Resultados para "<span id="qEcho" class="fw-bold text-primary"></span>":
+      <span id="count" class="fw-bold text-success">0</span> producto(s)
+    </p>
+    <p id="empty" class="alert alert-info small" style="display: none;">No hay resultados para tu búsqueda.</p>
+  </div>
 
-      const result = document.getElementById("result");
-      const empty = document.getElementById("empty");
-      const countEl = document.getElementById("count");
-      const qEcho = document.getElementById("qEcho");
+  <!-- CONTENEDOR TARJETAS -->
+  <div id="tarjetas" class="row g-3"></div>
 
-      const tarjetas = document.getElementById("tarjetas");
-      const template = document.getElementById("plantilla");
+  <!-- TEMPLATE TARJETA -->
+  <template id="plantilla">
+    <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+      <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+        <a class="prod-link text-decoration-none" href="#" target="_blank" rel="noreferrer">
+          <div class="bg-light d-flex align-items-center justify-content-center" style="min-height: 150px;">
+            <img class="prod-img" style="max-width: 100%; max-height: 100%; object-fit: contain;" src="" alt="">
+          </div>
+        </a>
 
-      let timer = null;
-      let controller = null;
+        <div class="card-body p-3 d-flex flex-column">
+          <div class="prod-title card-title small fw-500 flex-grow-1" style="line-height: 1.3; min-height: 45px; overflow: hidden;"></div>
 
-      function setLoading(on) {
-        spinner.classList.toggle("hidden", !on);
+          <div class="mt-2">
+            <div class="d-flex align-items-baseline gap-2">
+              <span class="prod-price fw-bold text-dark"></span>
+              <span class="prod-price-old text-muted text-decoration-line-through small" style="display: none;"></span>
+            </div>
+            <div class="prod-unit text-muted small mt-1"></div>
+            <div class="prod-badge mt-2" style="display: none;">
+              <span class="badge bg-danger">Rebajado</span>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <a class="btn-add btn btn-sm btn-warning w-100"
+               href="#">
+              Añadir al carro
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+<script>
+  const input = document.getElementById("q");
+  const spinner = document.getElementById("spinner");
+  const hint = document.getElementById("hint");
+  const errorEl = document.getElementById("error");
+
+  const result = document.getElementById("result");
+  const empty = document.getElementById("empty");
+  const countEl = document.getElementById("count");
+  const qEcho = document.getElementById("qEcho");
+
+  const tarjetas = document.getElementById("tarjetas");
+  const template = document.getElementById("plantilla");
+
+  let timer = null;
+  let controller = null;
+
+  function setLoading(on) {
+    spinner.style.display = on ? "inline-flex" : "none";
+  }
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.style.display = "block";
+  }
+
+  function clearError() {
+    errorEl.textContent = "";
+    errorEl.style.display = "none";
+  }
+
+  function limpiarTarjetas() {
+    tarjetas.replaceChildren();
+  }
+
+  function euro(n) {
+    return (typeof n === "number" && isFinite(n)) ? `${n.toFixed(2)} €` : "";
+  }
+
+  function muestraProducto(p) {
+    const clonado = template.content.cloneNode(true);
+
+    const id = p._id;
+    const title = p.title || p.nombre || "Producto";
+    const img = p.image || p.url_img || "";
+    const link = p.link || p.url || "#";
+
+    const isDiscounted = !!p.is_discounted && (typeof p.discounted_price === "number") && p.discounted_price > 0;
+    const price = isDiscounted ? p.discounted_price : p.price;
+    const priceOld = isDiscounted ? p.price : null;
+    const unit = p.unit_price_text || p.precio_unitario || p.price_text || "";
+
+    const a = clonado.querySelector(".prod-link");
+    a.href = link;
+
+    const im = clonado.querySelector(".prod-img");
+    im.src = img;
+    im.alt = title;
+
+    clonado.querySelector(".prod-title").textContent = title;
+
+    const priceEl = clonado.querySelector(".prod-price");
+    priceEl.textContent = (typeof price === "number") ? euro(price) : (p.price_text || "Precio s/d");
+
+    const unitEl = clonado.querySelector(".prod-unit");
+    unitEl.textContent = unit;
+
+    const badge = clonado.querySelector(".prod-badge");
+    const oldEl = clonado.querySelector(".prod-price-old");
+    if (isDiscounted) {
+      badge.style.display = "block";
+      if (typeof priceOld === "number") {
+        oldEl.textContent = euro(priceOld);
+        oldEl.style.display = "inline";
       }
+    }
 
-      function showError(msg) {
-        errorEl.textContent = msg;
-        errorEl.classList.remove("hidden");
-      }
+    const btnAdd = clonado.querySelector(".btn-add");
+    if (id) btnAdd.href = `/al_carrito/${encodeURIComponent(id)}`;
 
-      function clearError() {
-        errorEl.textContent = "";
-        errorEl.classList.add("hidden");
-      }
+    tarjetas.append(clonado);
+  }
 
-      function limpiarTarjetas() {
-        // vaciar contenedor (rápido)
-        tarjetas.replaceChildren();
-      }
+  async function doSearch(q) {
+    clearError();
 
-      function euro(n) {
-        return (typeof n === "number" && isFinite(n)) ? `${n.toFixed(2)} €` : "";
-      }
+    if (q.length < 3) {
+      hint.style.display = "block";
+      result.style.display = "none";
+      empty.style.display = "none";
+      countEl.textContent = "0";
+      qEcho.textContent = "";
+      limpiarTarjetas();
+      return;
+    }
 
-      function muestraProducto(p) {
-        const clonado = template.content.cloneNode(true);
+    if (controller) controller.abort();
+    controller = new AbortController();
 
-        // Campos (adapta aquí si tu JSON usa otros nombres)
-        const id = p._id;
-        const title = p.title || p.nombre || "Producto";
-        const img = p.image || p.url_img || "";
-        const link = p.link || p.url || "#";
+    setLoading(true);
 
-        const isDiscounted = !!p.is_discounted && (typeof p.discounted_price === "number") && p.discounted_price > 0;
-
-        const price = isDiscounted ? p.discounted_price : p.price;
-        const priceOld = isDiscounted ? p.price : null;
-
-        const unit = p.unit_price_text || p.precio_unitario || p.price_text || "";
-
-        // Rellenar DOM del clon
-        const a = clonado.querySelector(".prod-link");
-        a.href = link;
-
-        const im = clonado.querySelector(".prod-img");
-        im.src = img;
-        im.alt = title;
-
-        clonado.querySelector(".prod-title").textContent = title;
-
-        const priceEl = clonado.querySelector(".prod-price");
-        priceEl.textContent = (typeof price === "number") ? euro(price) : (p.price_text || "Precio s/d");
-
-        const unitEl = clonado.querySelector(".prod-unit");
-        unitEl.textContent = unit;
-
-        // Rebaja
-        const badge = clonado.querySelector(".prod-badge");
-        const oldEl = clonado.querySelector(".prod-price-old");
-        if (isDiscounted) {
-          badge.classList.remove("hidden");
-          if (typeof priceOld === "number") {
-            oldEl.textContent = euro(priceOld);
-            oldEl.classList.remove("hidden");
-          }
-        }
-
-        // Botón "Añadir al carro": reutiliza lo de tu práctica 2.3
-        const btnAdd = clonado.querySelector(".btn-add");
-        if (id) btnAdd.href = `/al_carrito/${encodeURIComponent(id)}`;
-
-        tarjetas.append(clonado);
-      }
-
-      async function doSearch(q) {
-        clearError();
-
-        if (q.length < 3) {
-          hint.classList.remove("hidden");
-          result.classList.add("hidden");
-          empty.classList.add("hidden");
-          countEl.textContent = "0";
-          qEcho.textContent = "";
-          limpiarTarjetas();
-          return;
-        }
-
-        if (controller) controller.abort();
-        controller = new AbortController();
-
-        setLoading(true);
-
-        try {
-          const res = await fetch(`/api/busqueda-anticipada/${encodeURIComponent(q)}`, {
-            signal: controller.signal
-          });
-
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.error || `Error ${res.status}`);
-          }
-
-          const data = await res.json();
-
-          hint.classList.add("hidden");
-          result.classList.remove("hidden");
-          qEcho.textContent = q;
-
-          // count total si lo devuelves; si no, usa items.length
-          const items = Array.isArray(data.items) ? data.items : [];
-          const count = (typeof data.count === "number") ? data.count : items.length;
-          countEl.textContent = String(count);
-
-          limpiarTarjetas();
-
-          if (items.length === 0) {
-            empty.classList.remove("hidden");
-            return;
-          } else {
-            empty.classList.add("hidden");
-          }
-
-          // pintar tarjetas
-          for (const p of items) {
-            muestraProducto(p);
-          }
-
-        } catch (e) {
-          if (e.name === "AbortError") return;
-          showError(e.message || "Error buscando");
-          limpiarTarjetas();
-          result.classList.add("hidden");
-          empty.classList.add("hidden");
-        } finally {
-          setLoading(false);
-        }
-      }
-
-      input.addEventListener("input", (e) => {
-        const q = e.target.value.trim();
-        clearTimeout(timer);
-        timer = setTimeout(() => doSearch(q), 250); // debounce
+    try {
+      const res = await fetch(`/api/busqueda-anticipada/${encodeURIComponent(q)}`, {
+        signal: controller.signal
       });
-    </script>
-  </body>
-</html>
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Error ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      hint.style.display = "none";
+      result.style.display = "block";
+      qEcho.textContent = q;
+
+      const items = Array.isArray(data.items) ? data.items : [];
+      const count = (typeof data.count === "number") ? data.count : items.length;
+      countEl.textContent = String(count);
+
+      limpiarTarjetas();
+
+      if (items.length === 0) {
+        empty.style.display = "block";
+        return;
+      } else {
+        empty.style.display = "none";
+      }
+
+      for (const p of items) {
+        muestraProducto(p);
+      }
+
+    } catch (e) {
+      if (e.name === "AbortError") return;
+      showError(e.message || "Error buscando");
+      limpiarTarjetas();
+      result.style.display = "none";
+      empty.style.display = "none";
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  input.addEventListener("input", (e) => {
+    const q = e.target.value.trim();
+    clearTimeout(timer);
+    timer = setTimeout(() => doSearch(q), 250);
+  });
+</script>
+{% endblock %}
