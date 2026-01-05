@@ -1,7 +1,8 @@
-# docker-compose.yml
+# docker-compose.yml - Desarrollo local
 services:
   mongo:
     image: mongo
+    container_name: mongo-dev
     restart: unless-stopped
     volumes:
       - ./data:/data/db
@@ -10,9 +11,12 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - dai_dev
 
   mongo-express:
     image: mongo-express
+    container_name: mongo-express-dev
     depends_on:
       - mongo
     restart: unless-stopped
@@ -23,3 +27,44 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
       ME_CONFIG_BASICAUTH: false
+    networks:
+      - dai_dev
+
+  tienda:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tienda-dev
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      NODE_ENV: development
+      MONGO_URL: mongodb://root:example@mongo:27017/tienda?authSource=admin
+    ports:
+      - 8000:8000
+    networks:
+      - dai_dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy-dev
+    restart: unless-stopped
+    depends_on:
+      - tienda
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./public:/usr/share/caddy/public:ro
+      - ./frontend/dist:/usr/share/caddy/react:ro
+    networks:
+      - dai_dev
+
+networks:
+  dai_dev:
+    driver: bridge

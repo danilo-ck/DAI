@@ -11,7 +11,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navegacion onInput={handleInput} value={busqueda} />
       <Resultados de={busqueda} />
     </div>
